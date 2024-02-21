@@ -6,7 +6,7 @@ function Navbar() {
 
     const logout = () => {
         localStorage.removeItem('authToken');
-        navigate('/login'); // Redirect to login page after logout
+        navigate('/login');
     };
 
     return (

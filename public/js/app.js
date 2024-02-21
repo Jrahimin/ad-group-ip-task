@@ -5351,7 +5351,7 @@ function Navbar() {
 
   var logout = function logout() {
     localStorage.removeItem('authToken');
-    navigate('/login'); // Redirect to login page after logout
+    navigate('/login');
   };
 
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("nav", {

@@ -17,13 +17,11 @@ class IpController extends Controller
 {
     use ApiResponseTrait;
 
-    protected string $exceptionMessage;
     protected IpRepositoryInterface $ipRepository;
 
     public function __construct(IpRepositoryInterface $ipRepository)
     {
-        $this->ipRepository     = $ipRepository;
-        $this->exceptionMessage = "Something went wrong. Please try again later.";
+        $this->ipRepository = $ipRepository;
     }
 
     /**

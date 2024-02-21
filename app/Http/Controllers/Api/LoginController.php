@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Contracts\Repositories\AuditTrailRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Entities\CommonResponseEntity;
+use App\Enums\AuditTrailActions;
 use App\Enums\HttpCodes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Traits\ApiResponseTrait;
+use App\Jobs\AddAuditTrailEntry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -16,13 +19,13 @@ class LoginController extends Controller
 {
     use ApiResponseTrait;
 
-    protected string $exceptionMessage;
     protected UserRepositoryInterface $userRepository;
+    protected AuditTrailRepositoryInterface $auditTrailRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository, AuditTrailRepositoryInterface $auditTrailRepository)
     {
-        $this->userRepository   = $userRepository;
-        $this->exceptionMessage = "Something went wrong. Please try again later.";
+        $this->userRepository       = $userRepository;
+        $this->auditTrailRepository = $auditTrailRepository;
     }
 
     /**
@@ -48,6 +51,9 @@ class LoginController extends Controller
             $token = $user->createToken('api-token')->plainTextToken;
 
             $response->data = ['token' => $token];
+
+            //$this->auditTrailRepository->add($user, AuditTrailActions::LOGIN);
+            AddAuditTrailEntry::dispatch($user, AuditTrailActions::LOGIN);
 
             return $this->handleResponse($response, config('response.messages.logged_in'), true);
         } catch (\Exception $e) {
