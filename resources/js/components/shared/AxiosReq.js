@@ -1,13 +1,17 @@
 import axios from "axios";
 
-export const AxiosReq = (url, data, callback, method='post', hasFile=false) => {
+export const AxiosReq = (url, data, callback, method = 'post', hasFile = false) => {
     let axiosOption = {
         method,
         url,
         data
     };
 
-    if(hasFile){
+    axiosOption['headers'] = {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+    }
+
+    if (hasFile) {
         axiosOption['headers'] = {
             "Content-Type": "multipart/form-data"
         }
@@ -17,7 +21,18 @@ export const AxiosReq = (url, data, callback, method='post', hasFile=false) => {
         console.log('data', response.data);
         callback(response.data);
     }).catch((error) => {
-        console.log('error', error);
+        const errorResponse = error.response;
+        console.log('error', errorResponse);
+        if (errorResponse.status === 401) {
+            const data = {
+                code: 401,
+                message: "You are not authenticated",
+            }
+            callback(data);
+
+            return;
+        }
+
         const data = {
             code: 500,
             message: "Something went wrong.",

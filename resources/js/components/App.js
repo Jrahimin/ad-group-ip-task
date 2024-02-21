@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Navbar from './Navbar';
 import Login from "./login/Login";
+import IPManagement from "./Ip/ManageIp";
 
 function App() {
     return (
@@ -11,7 +12,8 @@ function App() {
                 <Navbar/>
                 <br/>
                 <Routes>
-                    <Route path="/" element={<Login />} />
+                    <Route path="/" element={<IPManagement />} />
+                    <Route path="/login" element={<Login />} />
                 </Routes>
             </BrowserRouter>
         </>

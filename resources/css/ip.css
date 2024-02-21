@@ -1,0 +1,15 @@
+.add-ip-form .form-control {
+    margin-right: 10px;
+}
+
+.add-ip-form .btn {
+    width: auto;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.table input.form-control {
+    margin-bottom: 0;
+}

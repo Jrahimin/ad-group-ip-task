@@ -4,15 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Entities\CommonResponseEntity;
+use App\Enums\HttpCodes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Traits\ApiResponseTrait;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -23,7 +21,7 @@ class LoginController extends Controller
 
     public function __construct(UserRepositoryInterface $userRepository)
     {
-        $this->userRepository = $userRepository;
+        $this->userRepository   = $userRepository;
         $this->exceptionMessage = "Something went wrong. Please try again later.";
     }
 
@@ -39,8 +37,8 @@ class LoginController extends Controller
             $user = $this->userRepository->getUserByEmail($request->email);
 
             if (!$user || !Hash::check($request->password, $user->password)) {
-                $response->status       = 422;
-                $response->errorMessage = "User credentials did not match";
+                $response->status       = HttpCodes::UNAUTHORIZED;
+                $response->errorMessage = config('response.messages.credentials_mismatch');
 
                 return $this->handleResponse($response);
             }
@@ -51,11 +49,11 @@ class LoginController extends Controller
 
             $response->data = ['token' => $token];
 
-            return $this->handleResponse($response, "Successfully logged in", true);
+            return $this->handleResponse($response, config('response.messages.logged_in'), true);
         } catch (\Exception $e) {
             Log::error('Found Exception: ' . $e->getMessage() . ' [Script: ' . __CLASS__ . '@' . __FUNCTION__ . '] [Origin: ' . $e->getFile() . '-' . $e->getLine() . ']');
 
-            return $this->invalidResponse($this->exceptionMessage, 500);
+            return $this->invalidResponse(config('response.messages.exception'), HttpCodes::SERVER_ERR);
         }
     }
 }

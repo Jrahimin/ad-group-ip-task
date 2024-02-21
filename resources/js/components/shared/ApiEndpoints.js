@@ -1,5 +1,6 @@
 const baseUrl = "api/";
 
 export const ApiEndpoints = {
-    LOGIN: baseUrl+'login',
+    LOGIN: baseUrl + 'login',
+    IP: baseUrl + 'ips',
 }

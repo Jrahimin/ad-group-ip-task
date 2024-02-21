@@ -7,6 +7,13 @@ use App\Models\User;
 
 class UserRepository implements UserRepositoryInterface
 {
+    protected User $userModel;
+
+    public function __construct(User $userModel)
+    {
+        $this->userModel = $userModel;
+    }
+
     /**
      * @param string $email
      *
@@ -14,6 +21,8 @@ class UserRepository implements UserRepositoryInterface
      */
     public function getUserByEmail(string $email): ?User
     {
-        return User::where('email', $email)->first();
+        return $this->userModel->newModelQuery()
+            ->where('email', $email)
+            ->first();
     }
 }

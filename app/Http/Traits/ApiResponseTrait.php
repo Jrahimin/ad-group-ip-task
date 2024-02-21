@@ -1,14 +1,23 @@
 <?php
 
-
 namespace App\Http\Traits;
+
+use App\Enums\HttpCodes;
+use Illuminate\Http\JsonResponse;
 
 trait ApiResponseTrait
 {
-    public function handleResponse($responseObj, $message=null, $data =false)
+    /**
+     * @param             $responseObj
+     * @param string|null $message
+     * @param bool|null   $data
+     *
+     * @return JsonResponse
+     */
+    public function handleResponse($responseObj, ?string $message = null, ?bool $data = false): JsonResponse
     {
-        if ($responseObj->status != 200)
-            return $this->invalidResponse($responseObj->errorMessage, $responseObj->status ?? 422);
+        if ($responseObj->status != HttpCodes::SUCCESS)
+            return $this->invalidResponse($responseObj->errorMessage, $responseObj->status ?? HttpCodes::UNPROCESSABLE);
 
         return $this->successResponse($message, $data ? $responseObj : null);
     }
@@ -17,23 +26,31 @@ trait ApiResponseTrait
      * Invalid Request Response / Custom Validation Response
      *
      * @param string $message
-     * @return \Illuminate\Http\JsonResponse
+     * @param int    $code
+     *
+     * @return JsonResponse
      */
-    public function invalidResponse(string $message, int $code=422)
+    public function invalidResponse(string $message, int $code = HttpCodes::UNPROCESSABLE): JsonResponse
     {
         return response()->json([
-            'code'      =>  $code,
-            'message'  =>  $message,
-            'data'      =>  null
+            'code'    => $code,
+            'message' => $message,
+            'data'    => null
         ], 200);
     }
 
-    public function successResponse(string $message, $data)
+    /**
+     * @param string $message
+     * @param        $data
+     *
+     * @return JsonResponse
+     */
+    public function successResponse(string $message, $data): JsonResponse
     {
         return response()->json([
-            'code'      =>  200,
-            'message'  =>  $message,
-            'data'      =>  $data
+            'code'    => HttpCodes::SUCCESS,
+            'message' => $message,
+            'data'    => $data
         ], 200);
     }
 }
