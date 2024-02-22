@@ -14,7 +14,7 @@ Records and displays user activity, such as logins, IP additions, and modificati
 ## Installation Prerequisites
 Before installing the IP Management System, ensure you have the following installed on your system:
 - Docker (for Docker installation)
-- PHP >= 7.3
+- PHP >= 8.1
 - Composer
 - Node.js and npm
 
@@ -22,13 +22,14 @@ Before installing the IP Management System, ensure you have the following instal
 Follow these steps to install and start the IP Management System:
 ### With Docker:
 - Clone the repository
+- Start the Docker containers with `docker compose up -d` or for mac m1/m2 chip run `DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose up  -d`
+- Access the application shell with `docker exec -it ad bash`
 - Run `composer install` to install PHP dependencies.`
 - Run `npm install` to install Node.js dependencies.`
 - Run `cp .env.docker .env` to Rename .env.docker to .env
 - Generate an application key with `php artisan key:generate`
 - Cache the configuration files with `php artisan config:cache`
-- Start the Docker containers with `docker compose up -d` or for mac m1/m2 chip run `DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose up  -d`
-- Access the application shell with `docker-compose exec app bash`
+- Run `php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"`
 - Run migrations with `php artisan migrate`
 - Seed the database with `php artisan db:seed`
 - The application will be running on `http://localhost:8000/`
@@ -40,6 +41,7 @@ Follow these steps to install and start the IP Management System:
 - Run `cp .env.docker .env` to Rename .env.docker to .env
 - Generate an application key with `php artisan key:generate`
 - Cache the configuration files with `php artisan config:cache`
+- - Run `php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"`
 - Run migrations with `php artisan migrate`
 - Seed the database with `php artisan db:seed`
 - Serve the application with php artisan serve and access it at `http://localhost:8000/` (or the port provided).

@@ -3,12 +3,9 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\IpRepositoryInterface;
-use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Http\Requests\Api\IpAddRequest;
 use App\Http\Requests\Api\IpUpdateRequest;
 use App\Models\Ip;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class IpRepository implements IpRepositoryInterface
@@ -23,7 +20,7 @@ class IpRepository implements IpRepositoryInterface
     /**
      * @return Collection
      */
-    public function getAllIps(): Collection
+    public function getAll(): Collection
     {
         return $this->ipModel->newModelQuery()
                              ->latest()

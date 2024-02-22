@@ -7,6 +7,7 @@ use App\Enums\AuditTrailActions;
 use App\Models\AuditTrail;
 use App\Models\Ip;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class AuditTrailRepository implements AuditTrailRepositoryInterface
@@ -16,6 +17,17 @@ class AuditTrailRepository implements AuditTrailRepositoryInterface
     public function __construct(AuditTrail $ipModel)
     {
         $this->auditTrailModel = $ipModel;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAll(): Collection
+    {
+        return $this->auditTrailModel->newModelQuery()
+                                     ->with('auditable')
+                                     ->latest()
+                                     ->get();
     }
 
     /**

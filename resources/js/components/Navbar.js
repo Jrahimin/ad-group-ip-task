@@ -19,6 +19,9 @@ function Navbar() {
                     <li className="nav-item active">
                         <Link className="nav-link text-white" to="/">Manage IP</Link>
                     </li>
+                    <li className="nav-item active">
+                        <Link className="nav-link text-white" to="/audit">Audit Trail</Link>
+                    </li>
                 </ul>
                 <button onClick={logout} className="btn btn-danger mr-2" style={{marginLeft: 'auto'}}>Logout</button>
             </div>

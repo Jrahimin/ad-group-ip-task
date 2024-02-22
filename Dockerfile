@@ -27,8 +27,12 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets zip
 # Install Redis extension
 RUN pecl install redis && docker-php-ext-enable redis
 
+# Install Node.js and npm
+RUN curl -sL https://deb.nodesource.com/setup_21.x | bash - && \
+    apt-get update && apt-get install -y nodejs
+
 # Install Composer globally
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.7.1 /usr/bin/composer /usr/bin/composer
 
 # Set the working directory in the container to /var/www
 WORKDIR /var/www

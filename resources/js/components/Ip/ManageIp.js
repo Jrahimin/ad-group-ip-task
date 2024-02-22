@@ -10,8 +10,14 @@ function IPManagement() {
     const [newIp, setNewIp] = useState({ip_address: '', label: ''});
     const [editingLabels, setEditingLabels] = useState({});
     const [errorMsg, setErrorMessage] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
 
     useEffect(() => {
+        if (!localStorage.getItem('authToken')) {
+            navigate('/login');
+            return;
+        }
+
         fetchIps();
     }, []);
 
@@ -52,8 +58,10 @@ function IPManagement() {
                 fetchIps();
                 setNewIp({ip_address: '', label: ''});
                 setErrorMessage('');
+                setSuccessMsg(response.message);
             } else {
                 setErrorMessage(response.message);
+                setSuccessMsg('');
             }
         });
     };
@@ -63,7 +71,11 @@ function IPManagement() {
         AxiosReq(`${ApiEndpoints.IP}/${id}`, {label}, (response) => {
             if (response.code !== 200) {
                 setErrorMessage(response.message);
+                setSuccessMsg('');
+                return;
             }
+
+            setSuccessMsg(response.message)
         }, 'put');
     };
 
@@ -99,6 +111,9 @@ function IPManagement() {
                                 <button type="submit" className="btn btn-primary mb-2">Add IP</button>
                             </div>
                         </div>
+                        {successMsg && <div className="text-success mt-2">
+                            <span>{successMsg}</span>
+                        </div>}
                     </form>
                     {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
                     <table className="table table-bordered mt-3">

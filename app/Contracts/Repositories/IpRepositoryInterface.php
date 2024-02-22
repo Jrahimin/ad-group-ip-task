@@ -12,9 +12,20 @@ interface IpRepositoryInterface
     /**
      * @return Collection
      */
-    public function getAllIps(): Collection;
+    public function getAll(): Collection;
 
+    /**
+     * @param IpAddRequest $request
+     *
+     * @return Ip|null
+     */
     public function add(IpAddRequest $request): ?Ip;
 
+    /**
+     * @param IpUpdateRequest $request
+     * @param Ip              $ip
+     *
+     * @return void
+     */
     public function update(IpUpdateRequest $request, Ip $ip): void;
 }

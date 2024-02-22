@@ -31,7 +31,7 @@ class IpController extends Controller
     {
         $response = new CommonResponseEntity();
         try {
-            $ipList = $this->ipRepository->getAllIps();
+            $ipList = $this->ipRepository->getAll();
 
             $response->data = $ipList;
 
@@ -49,7 +49,7 @@ class IpController extends Controller
         try {
             $this->ipRepository->add($request);
 
-            return $this->handleResponse($response, "IP is successfully added");
+            return $this->handleResponse($response, config('response.messages.ip_added'));
         } catch (\Exception $e) {
             Log::error('Found Exception: ' . $e->getMessage() . ' [Script: ' . __CLASS__ . '@' . __FUNCTION__ . '] [Origin: ' . $e->getFile() . '-' . $e->getLine() . ']');
 
@@ -63,7 +63,7 @@ class IpController extends Controller
         try {
             $this->ipRepository->update($request, $ip);
 
-            return $this->handleResponse($response, "IP is successfully updated");
+            return $this->handleResponse($response, config('response.messages.ip_updated'));
         } catch (\Exception $e) {
             Log::error('Found Exception: ' . $e->getMessage() . ' [Script: ' . __CLASS__ . '@' . __FUNCTION__ . '] [Origin: ' . $e->getFile() . '-' . $e->getLine() . ']');
 

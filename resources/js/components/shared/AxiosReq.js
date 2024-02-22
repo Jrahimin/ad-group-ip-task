@@ -18,11 +18,9 @@ export const AxiosReq = (url, data, callback, method = 'post', hasFile = false) 
     }
 
     return axios(axiosOption).then((response) => {
-        console.log('data', response.data);
         callback(response.data);
     }).catch((error) => {
         const errorResponse = error.response;
-        console.log('error', errorResponse);
         if (errorResponse.status === 401) {
             const data = {
                 code: 401,
