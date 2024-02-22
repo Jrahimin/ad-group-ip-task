@@ -46,6 +46,10 @@ Follow these steps to install and start the IP Management System:
 - Seed the database with `php artisan db:seed`
 - Serve the application with php artisan serve and access it at `http://localhost:8000/` (or the port provided).
 
+### Run Test
+- Access the application shell with `docker exec -it ad bash`
+- Run `php artisan test --testsuite=Feature --filter=IpManagementTest`
+
 ## Usage
 To start using the IP Management System:
 ### Login Credential: 
