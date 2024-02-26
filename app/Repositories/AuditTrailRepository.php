@@ -4,10 +4,12 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\AuditTrailRepositoryInterface;
 use App\Enums\AuditTrailActions;
+use App\Enums\CacheKeys;
 use App\Models\AuditTrail;
 use App\Models\Ip;
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class AuditTrailRepository implements AuditTrailRepositoryInterface
@@ -24,10 +26,12 @@ class AuditTrailRepository implements AuditTrailRepositoryInterface
      */
     public function getAll(): Collection
     {
-        return $this->auditTrailModel->newModelQuery()
-                                     ->with('auditable')
-                                     ->latest()
-                                     ->get();
+        return Cache::remember(CacheKeys::AUDIT_TRAIL_KEY, 60, function () {
+            return $this->auditTrailModel->newModelQuery()
+                                         ->with('auditable')
+                                         ->latest()
+                                         ->get();
+        });
     }
 
     /**
@@ -47,6 +51,8 @@ class AuditTrailRepository implements AuditTrailRepositoryInterface
 
         try {
             $this->auditTrailModel->create($data);
+
+            Cache::forget(CacheKeys::AUDIT_TRAIL_KEY);
         } catch (\Exception $e) {
             Log::error('Found Exception: ' . $e->getMessage() . ' [Script: ' . __CLASS__ . '@' . __FUNCTION__ . '] [Origin: ' . $e->getFile() . '-' . $e->getLine() . ']');
         }

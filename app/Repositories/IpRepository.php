@@ -3,10 +3,12 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\IpRepositoryInterface;
+use App\Enums\CacheKeys;
 use App\Http\Requests\Api\IpAddRequest;
 use App\Http\Requests\Api\IpUpdateRequest;
 use App\Models\Ip;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class IpRepository implements IpRepositoryInterface
 {
@@ -22,9 +24,11 @@ class IpRepository implements IpRepositoryInterface
      */
     public function getAll(): Collection
     {
-        return $this->ipModel->newModelQuery()
-                             ->latest()
-                             ->get();
+        return Cache::remember(CacheKeys::IP_LIST_KEY, 60, function () {
+            return $this->ipModel->newModelQuery()
+                                 ->latest()
+                                 ->get();
+        });
     }
 
     /**
@@ -34,7 +38,8 @@ class IpRepository implements IpRepositoryInterface
      */
     public function add(IpAddRequest $request): ?Ip
     {
-        return $this->ipModel->create($request->only('ip_address', 'label'));
+        return $this->ipModel->newModelQuery()
+                             ->create($request->only('ip_address', 'label'));
     }
 
     /**

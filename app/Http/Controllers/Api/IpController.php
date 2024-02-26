@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Contracts\Repositories\IpRepositoryInterface;
 use App\Entities\CommonResponseEntity;
+use App\Enums\CacheKeys;
 use App\Enums\HttpCodes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\IpAddRequest;
@@ -11,6 +12,7 @@ use App\Http\Requests\Api\IpUpdateRequest;
 use App\Http\Traits\ApiResponseTrait;
 use App\Models\Ip;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class IpController extends Controller
@@ -49,6 +51,8 @@ class IpController extends Controller
         try {
             $this->ipRepository->add($request);
 
+            Cache::forget(CacheKeys::IP_LIST_KEY);
+
             return $this->handleResponse($response, config('response.messages.ip_added'));
         } catch (\Exception $e) {
             Log::error('Found Exception: ' . $e->getMessage() . ' [Script: ' . __CLASS__ . '@' . __FUNCTION__ . '] [Origin: ' . $e->getFile() . '-' . $e->getLine() . ']');
@@ -62,6 +66,8 @@ class IpController extends Controller
         $response = new CommonResponseEntity();
         try {
             $this->ipRepository->update($request, $ip);
+
+            Cache::forget(CacheKeys::IP_LIST_KEY);
 
             return $this->handleResponse($response, config('response.messages.ip_updated'));
         } catch (\Exception $e) {
